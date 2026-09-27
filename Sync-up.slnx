@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Sync-up/Sync-up.vcxproj" Id="4eb0a706-e01f-41ea-8bf7-78a6dcf5f537" />
+</Solution>
