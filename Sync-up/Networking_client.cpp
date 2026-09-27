@@ -17,6 +17,21 @@ bool Networking_client::checkConnectionTask() {
         return false;
 }
 
+bool Networking_client::sendMessage(string message) {
+    Packet packet;
+    packet << message;
+    Socket::Status status = connection.socket.send(packet);
+
+    if (status == Socket::Done)
+        return true;
+    else
+        return false;
+}
+
+string Networking_client::receiveMessage() {
+    
+}
+
 bool Networking_client::connect() {
     cout << "Connecting to server..." << endl;
     if (connection.socket.connect(connection.ip, connection.port) == Socket::Done) {

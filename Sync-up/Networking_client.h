@@ -30,6 +30,8 @@ protected:
 public:
     Networking_client();
     bool checkConnectionTask();
+    bool sendMessage(string message);
+    string receiveMessage();
     bool connect();
     void update();
     bool getIsConnected() const { return connection.isConnected; }
