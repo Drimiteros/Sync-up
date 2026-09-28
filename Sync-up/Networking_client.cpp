@@ -29,7 +29,7 @@ bool Networking_client::sendMessage(string message) {
 }
 
 string Networking_client::receiveMessage() {
-    
+    return "test";
 }
 
 bool Networking_client::connect() {

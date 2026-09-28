@@ -20,8 +20,8 @@ protected:
         sf::Clock checkClock;
         sf::Time checkInterval = sf::seconds(5.0f);
 
-        bool isConnected = false;
-        bool isChecking = false;
+        atomic<bool> isConnected { false };
+        atomic<bool> isChecking { false };
     };
     CheckConnectionStruct connection;
 
@@ -30,8 +30,8 @@ protected:
 public:
     Networking_client();
     bool checkConnectionTask();
-    bool sendMessage(string message);
-    string receiveMessage();
+    bool sendMessage(std::string message);
+    std::string receiveMessage();
     bool connect();
     void update();
     bool getIsConnected() const { return connection.isConnected; }

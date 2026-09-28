@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\C++ Saves\SFML-2.6.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\C++ Saves\SFML-2.6.0\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\C++ saves\SFML-2.6.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\C++ saves\SFML-2.6.2\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\C++ Saves\SFML-2.6.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\C++ Saves\SFML-2.6.0\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\C++ saves\SFML-2.6.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\C++ saves\SFML-2.6.2\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,6 +155,7 @@
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Main_loop.cpp" />
     <ClCompile Include="Networking_client.cpp" />
+    <ClCompile Include="Networking_server.cpp" />
     <ClCompile Include="UI_components.cpp" />
     <ClCompile Include="Sync-up.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Main_loop.h" />
     <ClInclude Include="Networking_client.h" />
+    <ClInclude Include="Networking_server.h" />
     <ClInclude Include="UI_components.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
