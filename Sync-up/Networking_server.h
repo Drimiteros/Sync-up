@@ -15,7 +15,7 @@ protected:
 
 public:
 	Networking_server();
-	void run();
+	bool run();
 	void stop();
 };
 
