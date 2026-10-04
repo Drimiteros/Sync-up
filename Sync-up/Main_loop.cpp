@@ -89,7 +89,7 @@ void Main_loop::update() {
             break;
         }
         case Mode::Server: {
-            networking_server.update();
+            networking_server.update(serverPort);
             break;
         }
         case Mode::Client: {

@@ -7,8 +7,11 @@ Networking_server::Networking_server() {
 
 }
 
-void Networking_server::update() {
-	async(launch::async, &Networking_server::run, this);
+void Networking_server::update(unsigned short customPort) {
+	if (!isRunning) {
+		port = customPort;
+		serverFuture = async(launch::async, &Networking_server::run, this);
+	}
 }
 
 bool Networking_server::run() {
@@ -27,12 +30,16 @@ bool Networking_server::run() {
 			if (selector.isReady(listener)) {
 				auto client = make_unique<TcpSocket>();
 				if (listener.accept(*client) == Socket::Done) {
+					IpAddress clientIP = client->getRemoteAddress();
+					cout << "New client added: " << clientIP.toString() << endl;
 					selector.add(*client);
 					clients.push_back(move(client));
+					clientCount++;
 				}
 			}
 			// Check existing clients for incoming data
 			else {
+				cout << "Active clients [" << clientCount << "]" << endl;
 				for (auto it = clients.begin(); it != clients.end();) {
 					TcpSocket& client = **it;
 					if (selector.isReady(client)) {
@@ -42,8 +49,9 @@ bool Networking_server::run() {
 							// Receive message
 							string message;
 							packet >> message;
-							clientMessageString = clientMessageString + message;
-							cout << "Received: " << packet << endl;
+							lock_guard<mutex>lock(serverMutex);
+							clientMessageString += message;
+							//cout << "Received: " << packet << endl;
 
 							// Send message
 							if (message.find("status") != string::npos) {
@@ -60,6 +68,7 @@ bool Networking_server::run() {
 							cout << "Client disconnected." << std::endl;
 							selector.remove(client);
 							it = clients.erase(it);
+							clientCount--;
 						}
 						else {
 							it++;
@@ -71,16 +80,21 @@ bool Networking_server::run() {
 				}
 			}
 		}
-
-		// Cleanup on exit
-		stop();
-		return 1;
 	}
+	// Cleanup on exit
+	cleanup();
+	return 1;
 }
 
 void Networking_server::stop() {
-	listener.close();
-	for (auto& client : clients) { client->disconnect(); }
-	clients.clear();
 	isRunning = false;
+}
+
+void Networking_server::cleanup() {
+	selector.clear();
+	listener.close();
+	for (auto& client : clients) {
+		client->disconnect();
+	}
+	clients.clear();
 }

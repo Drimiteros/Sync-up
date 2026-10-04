@@ -21,6 +21,7 @@ private:
     unsigned int MIN_HEIGHT = 720;
     std::string title = "Sync-up";
     std::string version = "v1.0";
+    unsigned short serverPort = 25565;
 
     void createWindow(unsigned int width, unsigned int height);
     void buildUI();
