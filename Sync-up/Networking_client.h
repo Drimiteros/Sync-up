@@ -20,8 +20,8 @@ protected:
         sf::Clock checkClock;
         sf::Time checkInterval = sf::seconds(5.0f);
 
-        atomic<bool> isConnected { false };
-        atomic<bool> isChecking { false };
+        std::atomic<bool> isConnected { false };
+        std::atomic<bool> isChecking { false };
     };
     CheckConnectionStruct connection;
 

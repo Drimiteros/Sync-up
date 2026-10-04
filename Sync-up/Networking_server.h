@@ -1,20 +1,22 @@
 #pragma once
 #include <iostream>
 #include <SFML/Network.hpp>
+#include <future>
 
 class Networking_server {
 private:
 
 protected:
-	TcpListener listener;
-	SocketSelector selector;
-	std::vector<std::unique_ptr<sf::TcpSocket>> clients;
-
+	sf::TcpListener listener;
+	sf::SocketSelector selector;
 	unsigned short port;
-	atomic<bool> isRunning{false};
+	std::vector<std::unique_ptr<sf::TcpSocket>> clients;
+	std::atomic<bool> isRunning{false};
+	std::string clientMessageString;
 
 public:
 	Networking_server();
+	void update();
 	bool run();
 	void stop();
 };

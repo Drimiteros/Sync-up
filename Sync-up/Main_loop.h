@@ -4,6 +4,7 @@
 #include "UI_components.h"
 #include "Cursor_input.h"
 #include "Networking_client.h"
+#include "Networking_server.h"
 #include "Enums.h"
 
 class Main_loop {
@@ -11,6 +12,7 @@ private:
     UI_components ui_components;
     Cursor_input cursor_input;
     Networking_client networking_client;
+    Networking_server networking_server;
 
     sf::RenderWindow window;
     unsigned int width = 1280;
