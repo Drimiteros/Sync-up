@@ -7,6 +7,8 @@ class Networking_server {
 private:
 
 protected:
+	std::string password;
+	std::string confirm_password;
 	sf::TcpListener listener;
 	sf::SocketSelector selector;
 	unsigned short port;
@@ -17,9 +19,12 @@ protected:
 	std::mutex serverMutex;
 	int clientCount = 0;
 
+	friend class Main_loop;
+	friend class UI_components;
+
 public:
 	Networking_server();
-	void update(unsigned short customPort);
+	void update();
 	bool run();
 	void stop();
 	void cleanup();

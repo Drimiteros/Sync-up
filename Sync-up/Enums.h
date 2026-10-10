@@ -4,6 +4,7 @@
 enum class Mode {
     Neutral,
     ClientSetup,
+    ServerSetup,
     Server,
     Client
 };

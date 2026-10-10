@@ -7,9 +7,8 @@ Networking_server::Networking_server() {
 
 }
 
-void Networking_server::update(unsigned short customPort) {
+void Networking_server::update() {
 	if (!isRunning) {
-		port = customPort;
 		serverFuture = async(launch::async, &Networking_server::run, this);
 	}
 }

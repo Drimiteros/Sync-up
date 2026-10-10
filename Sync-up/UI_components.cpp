@@ -196,9 +196,16 @@ void UI_components::drawButtons(RenderWindow& window) {
     }
 }
 
-void UI_components::addPlainText(string textString, int characterSize, Vector2f position, Vector2f scale, Color color) {
+void UI_components::addPlainText(string id, string textString, int characterSize, Vector2f position, Vector2f scale, Color color) {
+    for (int i = 0; i < plainTexts.size(); i++) {
+        if (plainTexts[i].id == id) {
+            cout << "Plain text with this id already exists." << endl;
+            return;
+        }
+    }
+    
     plainTexts.push_back(PlainText());
-
+    plainTexts.back().id = id;
     plainTexts.back().text.setFont(font);
     plainTexts.back().text.setString(textString);
     plainTexts.back().text.setCharacterSize(characterSize);
@@ -206,7 +213,26 @@ void UI_components::addPlainText(string textString, int characterSize, Vector2f 
     plainTexts.back().text.setScale(scale);
     plainTexts.back().text.setFillColor(color);
 }
-
+void UI_components::updatePlainText(Networking_server& networking_server, RenderWindow& window) {
+    for (int i = 0; i < plainTexts.size(); i++) {
+        if (plainTexts[i].id == "passMatchText") {
+            if (networking_server.password.size() > 0 || networking_server.confirm_password.size() > 0) {
+                if (networking_server.password == networking_server.confirm_password) {
+                    plainTexts[i].text.setString("Passwords match!");
+                    plainTexts[i].text.setFillColor(Color(0, 255, 150, 255));
+                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 110);
+                }
+                else {
+                    plainTexts[i].text.setString("Passwords do not match!");
+                    plainTexts[i].text.setFillColor(Color(255, 150, 150, 255));
+                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 110);
+                }
+            }
+            else
+                plainTexts[i].text.setString("");
+        }
+    }
+}
 void UI_components::drawPlainText(RenderWindow& window) {
     for (int i = 0; i < plainTexts.size(); i++) {
         window.draw(plainTexts[i].text);
@@ -259,7 +285,6 @@ namespace {
         f.caretClock.restart();
     }
 }
-
 UI_components::TextField* UI_components::createTextField(
     const string& id, const string& labelString, const string& initial,
     Vector2f position, Vector2f size, int characterSize
@@ -298,7 +323,6 @@ UI_components::TextField* UI_components::createTextField(
     f.caret.setFillColor(Color::White);
     return &f;
 }
-
 void UI_components::addTextField(
     string id, string labelString, string& target, string defaultValue,
     Vector2f position, Vector2f size, int characterSize, size_t maxLength, string allowedChars
@@ -311,7 +335,6 @@ void UI_components::addTextField(
     target = defaultValue;
     f->onChange = [&target](const string& v) { target = v; };
 }
-
 void UI_components::addTextField(
     string id, string labelString, int& target, int defaultValue,
     Vector2f position, Vector2f size, int characterSize, int maxValue
@@ -324,8 +347,7 @@ void UI_components::addTextField(
     target = defaultValue;
     f->onChange = [&target](const string& v) { if (!v.empty()) target = stoi(v); };
 }
-
-void UI_components::handleTextFieldEvent(const Event& event, RenderWindow& window) {
+void UI_components::updadteTextField(const Event& event, RenderWindow& window) {
     if (textFields.empty()) return;
 
     switch (event.type) {
@@ -384,7 +406,6 @@ void UI_components::handleTextFieldEvent(const Event& event, RenderWindow& windo
     default: break;
     }
 }
-
 void UI_components::drawTextFields(RenderWindow& window) {
     for (auto& f : textFields) {
         f.box.setOutlineColor(f.focused ? Color(255, 255, 255, 200) : Color(255, 255, 255, 60));

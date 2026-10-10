@@ -34,6 +34,29 @@ void Main_loop::buildUI() {
                 "Server Mode", "Host storage, watch connected\nclients and live logs", "server", 
                 { 390, 250 }, { 0.49, 0.49 }, { 0.115, 0.115 }, { 20, 92 }, { 0, 30 }, { 20, 20 }, { 255, 255, 255 }, { 255, 255, 255 }, 1, 20, 0, 1, 15,
                 [this]() {
+                    currentMode = Mode::ServerSetup;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            break;
+        }
+        case Mode::ServerSetup: {
+            ui_components.addPlainText("passwordText", "        Let's setup your server!", 20, {float(width / 2) - 165, float(height / 2) - 300}, {1, 1}, {255, 255, 255, 255});
+            ui_components.addPlainText("confirmPassText", "Please create a password to secure incoming connections.", 20, { float(width / 2) - 250, float(height / 2) - 270 }, { 1, 1 }, { 255, 255, 255, 155 });
+            ui_components.addTextField(
+                "pass", "Server Password", networking_server.password, "",
+                { float(width / 2) - 150, float(height / 2) - 100 }, { 300, 40 }, 20, 25
+            );
+            ui_components.addTextField(
+                "conf_pass", "Confirm Password", networking_server.confirm_password, "",
+                { float(width / 2) - 150, float(height / 2) - 0 }, { 300, 40 }, 20, 25
+            );
+            ui_components.addPlainText("passMatchText", "a", 20, { float(width / 2) - 250, float(height / 2) + 100 }, { 1, 1 }, { 255, 255, 255, 155 });
+            ui_components.addButton(
+                "Finish", "", "check",
+                { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
+                [this]() {
                     currentMode = Mode::Server;
                     ui_components.clear();
                     buildUI();
@@ -42,10 +65,11 @@ void Main_loop::buildUI() {
             break;
         }
         case Mode::Server: {
+
             break;
         }
         case Mode::ClientSetup: {
-            ui_components.addPlainText("Please enter your credentials for the\n   current server you want to join", 20, { float(width / 2) - 165, float(height / 2) - 300 }, { 1, 1 }, { 255, 255, 255, 155 });
+            ui_components.addPlainText("0", "Please enter your credentials for the\n   current server you want to join", 20, { float(width / 2) - 165, float(height / 2) - 300 }, { 1, 1 }, { 255, 255, 255, 155 });
             ui_components.addButton(
                 "Finish", "", "check",
                 { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
@@ -128,7 +152,7 @@ void Main_loop::events() {
         if (event.type == Event::Resized) {
             createWindow(max(event.size.width, MIN_WIDTH), max(event.size.height, MIN_HEIGHT));
         }
-        ui_components.handleTextFieldEvent(event, window);
+        ui_components.updadteTextField(event, window);
     }
 }
 
@@ -146,20 +170,26 @@ void Main_loop::update() {
     // UIs
     cursor_input.update(window);
     ui_components.updateButtons(cursor_input);
+    ui_components.updatePlainText(networking_server, window);
 
     // Networking
     switch (currentMode) {
         case Mode::Neutral: {
             break;
         }
+        case Mode::ServerSetup: {
+
+            break;
+        }
         case Mode::Server: {
-            networking_server.update(serverPort);
+            networking_server.update();
             break;
         }
         case Mode::Client: {
             networking_client.update();
             ui_components.updateSidebar();
             ui_components.updateConnectionStatus(networking_client);
+            break;
         }
     }
 }

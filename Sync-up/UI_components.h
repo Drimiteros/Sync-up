@@ -5,6 +5,7 @@
 #include <climits>
 #include "Cursor_input.h"
 #include "Networking_client.h"
+#include "Networking_server.h"
 
 class Networking_client;
 
@@ -119,6 +120,7 @@ public:
 
     // Plaintext
     struct PlainText {
+        std::string id;
         sf::Text text;
         std::string textString = "Text...";
         sf::Vector2f textPosition{1, 1};
@@ -180,7 +182,8 @@ public:
     void updateButtons(Cursor_input& cursor_input);
     void drawButtons(sf::RenderWindow& window);
 
-    void addPlainText(std::string textString, int characterSize, sf::Vector2f position, sf::Vector2f scale, sf::Color color);
+    void addPlainText(std::string id, std::string textString, int characterSize, sf::Vector2f position, sf::Vector2f scale, sf::Color color);
+    void updatePlainText(Networking_server& networking_server, sf::RenderWindow& window);
     void drawPlainText(sf::RenderWindow& window);
 
     void addTextField(
@@ -192,7 +195,7 @@ public:
         std::string id, std::string labelString, int& target, int defaultValue,
         sf::Vector2f position, sf::Vector2f size, int characterSize = 18, int maxValue = INT_MAX
     );
-    void handleTextFieldEvent(const sf::Event& event, sf::RenderWindow& window);
+    void updadteTextField(const sf::Event& event, sf::RenderWindow& window);
     void drawTextFields(sf::RenderWindow& window);
 };
 
