@@ -2,6 +2,7 @@
 #include <iostream>
 #include <functional>
 #include <SFML/Graphics.hpp>
+#include <climits>
 #include "Cursor_input.h"
 #include "Networking_client.h"
 
@@ -9,8 +10,10 @@ class Networking_client;
 
 class UI_components {
 private:
+    sf::Font font;
 
 public:
+    // Sidebar
     struct SideBar {
         sf::Sprite sidebar;
         sf::Vector2f offset{ 0, 0 };
@@ -25,12 +28,13 @@ public:
     std::vector<SideBar> sideBars;
     sf::Texture sidebarTexture;
 
+    // Button
     struct Button {
         // Button
         sf::Sprite button;
         sf::Vector2f buttonOffset{ 0, 0 };
         sf::Vector2f buttonScale{ 1, 1 };
-        sf::Color buttonColor{ 255, 255, 255 };
+        sf::Color buttonColor{ 255, 255, 255, 4 };
         int hoverStyle = 0;
         int baseStyle = 0;
 
@@ -84,6 +88,7 @@ public:
     std::vector<Button> buttons;
     sf::Texture buttonTexture0;
     sf::Texture buttonTexture1;
+    sf::Texture buttonTexture2;
     sf::Texture folderIconTexture;
     sf::Texture fileIconTexture;
     sf::Texture gearIconTexture;
@@ -92,8 +97,10 @@ public:
     sf::Texture errorIconTexture;
     sf::Texture monitorIconTexture;
     sf::Texture serverIconTexture;
-    sf::Font font;
+    sf::Texture sendIconTexture;
+    sf::Texture checkIconTexture;
 
+    // Connection status
     struct ConnectionStatus {
         sf::CircleShape statusCircle;
         float radius = 5;
@@ -109,6 +116,49 @@ public:
         }
     };
     std::vector<ConnectionStatus> connectionStatus;
+
+    // Plaintext
+    struct PlainText {
+        sf::Text text;
+        std::string textString = "Text...";
+        sf::Vector2f textPosition{1, 1};
+        sf::Vector2f scale{1, 1};
+        sf::Color color{ 255, 255, 255, 255 };
+        int characterSize = 10;
+
+        PlainText() {
+            text.setCharacterSize(characterSize);
+            text.setString(textString);
+            text.setPosition(textPosition);
+            text.setScale(scale);
+            text.setFillColor(color);
+        }
+    };
+    std::vector<PlainText> plainTexts;
+
+    // Text field
+    enum class TextFieldType { Text, Number };
+    struct TextField {
+        std::string id;
+        sf::RectangleShape box;
+        sf::RectangleShape caret;
+        sf::Text label;
+        sf::Text text;
+        std::string value;
+        std::string allowedChars;          
+        TextFieldType type = TextFieldType::Text;
+        std::size_t maxLength = 64;
+        long long maxValue = INT_MAX;    
+        std::size_t cursor = 0;
+        bool focused = false;
+        sf::Clock caretClock;
+        std::function<void(const std::string&)> onChange;
+    };
+    std::vector<TextField> textFields;
+    TextField* createTextField(
+        const std::string& id, const std::string& labelString, const std::string& initial,
+        sf::Vector2f position, sf::Vector2f size, int characterSize
+    );
 
     UI_components();
     void clear();
@@ -129,5 +179,20 @@ public:
     );
     void updateButtons(Cursor_input& cursor_input);
     void drawButtons(sf::RenderWindow& window);
+
+    void addPlainText(std::string textString, int characterSize, sf::Vector2f position, sf::Vector2f scale, sf::Color color);
+    void drawPlainText(sf::RenderWindow& window);
+
+    void addTextField(
+        std::string id, std::string labelString, std::string& target, std::string defaultValue,
+        sf::Vector2f position, sf::Vector2f size, int characterSize = 18,
+        std::size_t maxLength = 64, std::string allowedChars = ""
+    );
+    void addTextField(
+        std::string id, std::string labelString, int& target, int defaultValue,
+        sf::Vector2f position, sf::Vector2f size, int characterSize = 18, int maxValue = INT_MAX
+    );
+    void handleTextFieldEvent(const sf::Event& event, sf::RenderWindow& window);
+    void drawTextFields(sf::RenderWindow& window);
 };
 

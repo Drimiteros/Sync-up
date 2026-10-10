@@ -7,6 +7,8 @@
 #include "Networking_server.h"
 #include "Enums.h"
 
+class Networking_client;
+
 class Main_loop {
 private:
     UI_components ui_components;
@@ -32,6 +34,7 @@ private:
 public:
     // Initialize mode
     Mode currentMode = Mode::Neutral;
+    State currentState = State::Files;
 
     Main_loop();
     void loop();

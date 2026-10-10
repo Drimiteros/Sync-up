@@ -25,7 +25,7 @@ void Main_loop::buildUI() {
                 "Client Mode", "Browse remote files, run\ntransfers and manage backups", "monitor", 
                 { 650, 250 }, { 0.49, 0.49 }, { 0.115, 0.115 }, { 20, 92 }, { 0, 30 }, { 20, 20 }, { 255, 255, 255 }, { 255, 255, 255 }, 1, 20, 0, 1, 15,
                 [this]() {
-                    networking_client.connect() ? currentMode = Mode::Client : currentMode = Mode::Neutral;
+                    currentMode = Mode::ClientSetup;
                     ui_components.clear();
                     buildUI();
                 }
@@ -44,13 +44,76 @@ void Main_loop::buildUI() {
         case Mode::Server: {
             break;
         }
+        case Mode::ClientSetup: {
+            ui_components.addPlainText("Please enter your credentials for the\n   current server you want to join", 20, { float(width / 2) - 165, float(height / 2) - 300 }, { 1, 1 }, { 255, 255, 255, 155 });
+            ui_components.addButton(
+                "Finish", "", "check",
+                { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
+                [this]() {
+                    networking_client.connect() ? currentMode = Mode::Client : currentMode = Mode::Neutral;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            ui_components.addTextField(
+                "ip", "Server IP", networking_client.ip, "127.0.0.1",
+                { float(width / 2) - 150, float(height / 2) - 100 }, { 300, 40 }, 20, 15, "0123456789."
+            );
+            ui_components.addTextField(
+                "port", "Port", networking_client.port, 25565,
+                { float(width / 2) - 150, float(height / 2) }, { 300, 40 }, 20, 65535
+            );
+            break;
+        }
         case Mode::Client: {
             ui_components.addSidebar("Sidebar", { 5, 5 });
-            ui_components.addButton("Files", "", "file", { 15, 15 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0);
-            ui_components.addButton("Downloads", "", "download", { 15, 65 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0);
-            ui_components.addButton("Transfers", "", "upload", { 15, 115 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 12 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0);
-            ui_components.addButton("Settings", "", "gear", {15, 165}, {0.49, 0.49}, {0.1, 0.1}, {50, 12}, { 0, 0 }, {5, 4}, {255, 255, 255, 155}, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0);
-            ui_components.addConnectionStatus({20, 690});
+            ui_components.addConnectionStatus({ 20, 690 });
+            ui_components.addButton(
+                "Files", "", "file", 
+                { 15, 15 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
+                [this]() {
+                    currentState = State::Files;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            ui_components.addButton(
+                "Downloads", "", "download", 
+                { 15, 65 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
+                [this]() {
+                    currentState = State::Downloads;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            ui_components.addButton(
+                "Transfers", "", "upload", 
+                { 15, 115 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 12 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
+                [this]() {
+                    currentState = State::Transfers;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            ui_components.addButton(
+                "Settings", "", "gear", 
+                {15, 165}, {0.49, 0.49}, {0.1, 0.1}, {50, 12}, { 0, 0 }, {5, 4}, {255, 255, 255, 155}, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
+                [this]() {
+                    currentState = State::Settings;
+                    ui_components.clear();
+                    buildUI();
+                }
+            );
+            
+            if (currentState == State::Files) {
+                ui_components.addButton(
+                    "Send test message", "", "send",
+                    { float(width / 2), float(height / 2) }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
+                    [this]() {
+                        networking_client.sendMessage("status");
+                    }
+                );
+            }
             break;
         }
     }
@@ -65,6 +128,7 @@ void Main_loop::events() {
         if (event.type == Event::Resized) {
             createWindow(max(event.size.width, MIN_WIDTH), max(event.size.height, MIN_HEIGHT));
         }
+        ui_components.handleTextFieldEvent(event, window);
     }
 }
 
@@ -104,5 +168,7 @@ void Main_loop::draw() {
     ui_components.drawSideBar(window);
     ui_components.drawButtons(window);
     ui_components.drawConnectionStatus(window);
+    ui_components.drawPlainText(window);
+    ui_components.drawTextFields(window);
     cursor_input.draw_ui_layer(window);
 }

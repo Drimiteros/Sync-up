@@ -51,17 +51,16 @@ bool Networking_server::run() {
 							packet >> message;
 							lock_guard<mutex>lock(serverMutex);
 							clientMessageString += message;
-							//cout << "Received: " << packet << endl;
+							cout << "Received: " << message << endl;
 
 							// Send message
 							if (message.find("status") != string::npos) {
 								Packet reply;
-								String replyMessage = "";
+								string replyMessage = "Message received";
 								reply << replyMessage;
 								client.send(reply); 
 								cout << "Server echo:  " << reply << endl;
 							}
-
 							it++;
 						}
 						else if (status == Socket::Disconnected || status == Socket::Error) {
