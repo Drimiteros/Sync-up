@@ -100,6 +100,7 @@ public:
     sf::Texture serverIconTexture;
     sf::Texture sendIconTexture;
     sf::Texture checkIconTexture;
+    sf::Texture driveIconTexture;
 
     // Connection status
     struct ConnectionStatus {
@@ -174,7 +175,7 @@ public:
     void drawSideBar(sf::RenderWindow& window);
 
     void addButton(
-        std::string titleString, std::string descriptionString, std::string icon, sf::Vector2f buttonPosition, sf::Vector2f buttonScale,
+        sf::String titleString, sf::String descriptionString, std::string icon, sf::Vector2f buttonPosition, sf::Vector2f buttonScale,
         sf::Vector2f iconScale, sf::Vector2f titleOffset, sf::Vector2f descriptionOffset, sf::Vector2f iconOffset, sf::Color titleColor, 
         sf::Color descriptionColor, int buttonTexture, int titleCharacterSize, int hoverStyle, int baseStyle, int descriptionCharacterSize,
         std::function<void()> onClick = nullptr

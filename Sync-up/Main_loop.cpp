@@ -5,6 +5,7 @@ using namespace std;
 using namespace sf;
 
 Main_loop::Main_loop() {
+    disk_operations.getDiskNames();
     createWindow(width, height);
     buildUI();
 }
@@ -45,14 +46,18 @@ void Main_loop::buildUI() {
             ui_components.addPlainText("passwordText", "        Let's setup your server!", 20, {float(width / 2) - 165, float(height / 2) - 300}, {1, 1}, {255, 255, 255, 255});
             ui_components.addPlainText("confirmPassText", "Please create a password to secure incoming connections.", 20, { float(width / 2) - 250, float(height / 2) - 270 }, { 1, 1 }, { 255, 255, 255, 155 });
             ui_components.addTextField(
+                "port", "Server Port", networking_server.port, 25565,
+                { float(width / 2) - 150, float(height / 2) - 150 }, { 300, 40 }, 20, 25
+            );
+            ui_components.addTextField(
                 "pass", "Server Password", networking_server.password, "",
-                { float(width / 2) - 150, float(height / 2) - 100 }, { 300, 40 }, 20, 25
+                { float(width / 2) - 150, float(height / 2) - 50 }, { 300, 40 }, 20, 25
             );
             ui_components.addTextField(
                 "conf_pass", "Confirm Password", networking_server.confirm_password, "",
-                { float(width / 2) - 150, float(height / 2) - 0 }, { 300, 40 }, 20, 25
+                { float(width / 2) - 150, float(height / 2) + 50 }, { 300, 40 }, 20, 25
             );
-            ui_components.addPlainText("passMatchText", "a", 20, { float(width / 2) - 250, float(height / 2) + 100 }, { 1, 1 }, { 255, 255, 255, 155 });
+            ui_components.addPlainText("passMatchText", "a", 20, { float(width / 2) - 250, float(height / 2) + 120 }, { 1, 1 }, { 255, 255, 255, 155 });
             ui_components.addButton(
                 "Finish", "", "check",
                 { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
@@ -65,7 +70,13 @@ void Main_loop::buildUI() {
             break;
         }
         case Mode::Server: {
-
+            for (int i = 0; i < disk_operations.labels.size(); ++i) {
+                ui_components.addButton(
+                    wstring(1, disk_operations.drives[i]) + ":\\", disk_operations.labels[i], "drive",
+                    { 10, 10 + float(i * 100) }, {0.49, 0.49}, {0.15, 0.15}, {50, 14}, {-40, 30}, {10, 7}, {255, 255, 255, 155}, {255, 255, 255, 100}, 2, 25, 0, 1, 15,
+                    [this]() {}
+                );
+            }
             break;
         }
         case Mode::ClientSetup: {

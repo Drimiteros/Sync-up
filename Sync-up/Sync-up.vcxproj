@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cursor_input.cpp" />
+    <ClCompile Include="Disk_operations.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Main_loop.cpp" />
     <ClCompile Include="Networking_client.cpp" />
@@ -163,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cursor_input.h" />
+    <ClInclude Include="Disk_operations.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="Main_loop.h" />
     <ClInclude Include="Networking_client.h" />

@@ -6,6 +6,7 @@
 #include "Networking_client.h"
 #include "Networking_server.h"
 #include "Enums.h"
+#include "Disk_operations.h"
 
 class Networking_client;
 
@@ -15,6 +16,7 @@ private:
     Cursor_input cursor_input;
     Networking_client networking_client;
     Networking_server networking_server;
+    Disk_operations disk_operations;
 
     sf::RenderWindow window;
     unsigned int width = 1280;

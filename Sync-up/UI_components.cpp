@@ -11,6 +11,8 @@ UI_components::UI_components() {
     buttonTexture0.setSmooth(true);
     buttonTexture1.loadFromFile("src/Textures/button1.png");
     buttonTexture1.setSmooth(true);
+    buttonTexture2.loadFromFile("src/Textures/button2.png");
+    buttonTexture2.setSmooth(true);
     folderIconTexture.loadFromFile("src/Textures/folder.png");
     folderIconTexture.setSmooth(true);
     fileIconTexture.loadFromFile("src/Textures/file.png");
@@ -31,6 +33,8 @@ UI_components::UI_components() {
     sendIconTexture.setSmooth(true);
     checkIconTexture.loadFromFile("src/Textures/check.png");
     checkIconTexture.setSmooth(true);
+    driveIconTexture.loadFromFile("src/Textures/drive.png");
+    driveIconTexture.setSmooth(true);
 }
 
 void UI_components::clear() {
@@ -41,6 +45,7 @@ void UI_components::clear() {
     textFields.clear();
 }
 
+// ---------------------------------------------------------------- Connection status
 void UI_components::addConnectionStatus(Vector2f boxPosition) {
     connectionStatus.push_back(ConnectionStatus());
     connectionStatus.back().statusCircle.setPosition(boxPosition);
@@ -67,6 +72,7 @@ void UI_components::drawConnectionStatus(RenderWindow& window) {
     }
 }
 
+// ---------------------------------------------------------------- Sidebars
 void UI_components::addSidebar(string label, Vector2f position) {
     for (int i = 0; i < sideBars.size(); i++) {
         if (sideBars[i].label == label) {
@@ -88,8 +94,9 @@ void UI_components::drawSideBar(RenderWindow& window) {
     }
 }
 
+// ---------------------------------------------------------------- Buttons
 void UI_components::addButton(
-    string titleString, string descriptionString, string icon, Vector2f buttonPosition, Vector2f buttonScale, Vector2f iconScale,
+    String titleString, String descriptionString, string icon, Vector2f buttonPosition, Vector2f buttonScale, Vector2f iconScale,
     Vector2f titleOffset, Vector2f descriptionOffset, Vector2f iconOffset, Color titleColor, Color descriptionColor, int buttonTexture, int titleCharacterSize,
     int hoverStyle, int baseStyle, int descriptionCharacterSize, function<void()> onClick
 ) {
@@ -105,7 +112,8 @@ void UI_components::addButton(
     buttons.back().button.setScale(buttonScale);
     buttons.back().button.setTexture(
         buttonTexture == 0 ? buttonTexture0 : 
-        buttonTexture == 1 ? buttonTexture1 : 
+        buttonTexture == 1 ? buttonTexture1 :
+        buttonTexture == 2 ? buttonTexture2 :
         buttonTexture0
     );
     buttons.back().hoverStyle = hoverStyle;
@@ -137,6 +145,7 @@ void UI_components::addButton(
         icon == "server" ? serverIconTexture :
         icon == "send" ? sendIconTexture :
         icon == "check" ? checkIconTexture :
+        icon == "drive" ? driveIconTexture :
         errorIconTexture
     );
     buttons.back().icon.setScale(iconScale);
@@ -196,6 +205,7 @@ void UI_components::drawButtons(RenderWindow& window) {
     }
 }
 
+// ---------------------------------------------------------------- Plain Text
 void UI_components::addPlainText(string id, string textString, int characterSize, Vector2f position, Vector2f scale, Color color) {
     for (int i = 0; i < plainTexts.size(); i++) {
         if (plainTexts[i].id == id) {
@@ -220,12 +230,12 @@ void UI_components::updatePlainText(Networking_server& networking_server, Render
                 if (networking_server.password == networking_server.confirm_password) {
                     plainTexts[i].text.setString("Passwords match!");
                     plainTexts[i].text.setFillColor(Color(0, 255, 150, 255));
-                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 110);
+                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 130);
                 }
                 else {
                     plainTexts[i].text.setString("Passwords do not match!");
                     plainTexts[i].text.setFillColor(Color(255, 150, 150, 255));
-                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 110);
+                    plainTexts[i].text.setPosition(window.getSize().x / 2 - plainTexts[i].text.getLocalBounds().width / 2, window.getSize().y / 2 + 130);
                 }
             }
             else

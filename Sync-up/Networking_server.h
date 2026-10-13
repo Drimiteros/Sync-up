@@ -11,7 +11,7 @@ protected:
 	std::string confirm_password;
 	sf::TcpListener listener;
 	sf::SocketSelector selector;
-	unsigned short port;
+	int port;
 	std::vector<std::unique_ptr<sf::TcpSocket>> clients;
 	std::atomic<bool> isRunning{false};
 	std::string clientMessageString;
