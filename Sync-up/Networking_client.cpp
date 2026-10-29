@@ -49,6 +49,7 @@ bool Networking_client::connect() {
     }
     else {
         cout << "Failed to connected to server..." << endl;
+        socket.disconnect();
         connection.isConnected = false;
         return false;
     }
@@ -84,11 +85,10 @@ void Networking_client::update() {
     }
     if (message.isChecking && message.message.valid()) {
         if (message.message.wait_for(chrono::seconds(0)) == future_status::ready) {
-            string receivedMessage;
-            receivedMessage = message.message.get();
+            message.receivedMessage = message.message.get();
             message.isChecking = false;
             message.checkClock.restart();
-            cout << "Received message: " << receivedMessage << endl;
+            cout << "Received message: " << message.receivedMessage << endl;
         }
     }
 }

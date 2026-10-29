@@ -77,7 +77,7 @@ public:
             title.setString(titleString);
             title.setPosition(button.getPosition().x + 5, button.getPosition().y + 15);
 
-            descriptionFont.loadFromFile("src/Fonts/Font.ttf");
+            descriptionFont.loadFromFile("src/Fonts/font.ttf");
             description.setFont(descriptionFont);
             description.setCharacterSize(descriptionSize);
             description.setScale(descriptionScale);

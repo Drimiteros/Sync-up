@@ -27,8 +27,9 @@ protected:
     struct ReceiveMessageStruct {
         std::future<std::string> message;
         sf::Clock checkClock;
-        sf::Time checkInterval = sf::seconds(1);
+        sf::Time checkInterval = sf::seconds(1.0f);
         std::atomic<bool> isChecking{ false };
+        std::string receivedMessage;
     };
     ReceiveMessageStruct message;
 

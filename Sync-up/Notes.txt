@@ -1,0 +1,18 @@
+🟠 Architecture / design
+
+5. Main_loop is a God object. It owns the window and every subsystem (UI_components, Cursor_input, Networking_client, Networking_server, Disk_operations) as members, then reaches into each through friend. The view and controller are entangled.
+- Fix: separate into a Model (networking + disk), a View (UI_components), and a thin Controller that owns the window and calls the two. This also stops the view from reaching into networking_server.password etc.
+
+6. Duplicate switch(currentMode) state machine. buildUI() (lines 20-155) and update() (lines 187-206) each have a 5-armed switch on Mode. They're easy to drift out of sync (e.g., a new mode added in one but not the other).
+- Fix: drive both from a single state machine — one switch per concern, or a per-mode policy object.
+
+7. Repeated/identical code in buildUI. The "Finish" button (lines 62-69 and 85-92) is pasted twice verbatim, and nearly every addButton lambda is ui_components.clear(); buildUI();. The button itself is a 16-argument function (UI_components.h:177-182) — a huge signature that should be a small struct/data object, not a positional argument list.
+- Fix: a ButtonSpec/data record + factory; remove the duplicate lambdas.
+
+8. friend class everywhere instead of an interface. Networking_client.h:35-36 and Networking_server.h:22-23 grant friend class UI_components; friend class Main_loop;. This leaks internals and makes both classes unusable as library components.
+- Fix: give networking small, well-defined accessor methods (isConnected(), send(), connect()) instead of friendship.
+
+🔴 Critical (runtime bugs)
+
+1. stop() can't work while blocked.
+- Networking_server::run() blocks in selector.wait(milliseconds(100)) (line 27) with no timeout. stop() sets isRunning = false (line 87) but the worker never re-checks until a select event — so the server can't be shut down. Add a timeout to selector.wait or a periodic isRunning check.
