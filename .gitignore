@@ -5,6 +5,8 @@
 
 # Extras
 !Sync-up.vcxproj
+!Sync-up.vcxproj.user
+!Sync-up.vcxproj.filters
 
 # User-specific files
 *.rsuser

@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\C++ saves\Sync-up\Sync-up\SFML-2.6.0\include</IncludePath>
-    <LibraryPath>C:\C++ saves\Sync-up\Sync-up\SFML-2.6.0\lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\ucrt\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)SFML-2.6.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)SFML-2.6.0\lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\ucrt\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\C++ saves\Sync-up\Sync-up\SFML-2.6.0\include</IncludePath>
-    <LibraryPath>C:\C++ saves\Sync-up\Sync-up\SFML-2.6.0\lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\ucrt\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)SFML-2.6.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)SFML-2.6.0\lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\ucrt\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
