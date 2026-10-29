@@ -47,7 +47,7 @@ void Main_loop::buildUI() {
             ui_components.addPlainText("confirmPassText", "Please create a password to secure incoming connections.", 20, { float(width / 2) - 250, float(height / 2) - 270 }, { 1, 1 }, { 255, 255, 255, 155 });
             ui_components.addTextField(
                 "port", "Server Port", networking_server.port, 25565,
-                { float(width / 2) - 150, float(height / 2) - 150 }, { 300, 40 }, 20, 25
+                { float(width / 2) - 150, float(height / 2) - 150 }, { 300, 40 }, 20, 65535
             );
             ui_components.addTextField(
                 "pass", "Server Password", networking_server.password, "",

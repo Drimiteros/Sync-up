@@ -3,7 +3,7 @@
 using namespace std;
 using namespace sf;
 
-Networking_server::Networking_server() : port(25565) {}
+Networking_server::Networking_server() {}
 
 Networking_server::~Networking_server() {
     stop();
