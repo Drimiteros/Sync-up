@@ -63,6 +63,7 @@ void Main_loop::buildUI() {
                 { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
                 [this]() {
                     currentMode = Mode::Server;
+                    networking_server.start();
                     ui_components.clear();
                     buildUI();
                 }
@@ -193,7 +194,6 @@ void Main_loop::update() {
             break;
         }
         case Mode::Server: {
-            networking_server.update();
             break;
         }
         case Mode::Client: {
