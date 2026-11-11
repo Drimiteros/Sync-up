@@ -48,11 +48,24 @@ void Networking_server::run() {
                             string message;
                             packet >> message;
 
+                            // Restore message handling and thread safety
+                            lock_guard<mutex> lock(serverMutex);
+                            clientMessageString += message;
+                            cout << "Received: " << message << endl;
+
                             // Kick client with invalid credentials
                             if (message.find("password") != string::npos) {
-                                string getPass = message.substr(9, message.length() - 9);
-                                cout << "Extracted password: " << getPass << endl;
-                                if (getPass != password) {
+                                string extractedPass = message.substr(9, message.length() - 9);
+                                cout << "Extracted password: " << extractedPass << endl;
+                                if (extractedPass != password) {
+                                    // Send authentication status
+                                    Packet reply;
+                                    string replyMessage = "Passwords do not match!";
+                                    reply << replyMessage;
+                                    client.send(reply);
+                                    cout << "Server echo: " << replyMessage << endl;
+
+                                    // Kick client
                                     cout << "Client not authenticated." << endl;
                                     selector.remove(client);
                                     it = clients.erase(it);
@@ -60,11 +73,6 @@ void Networking_server::run() {
                                     continue;
                                 }
                             }
-
-                            // Restore message handling and thread safety
-                            lock_guard<mutex> lock(serverMutex);
-                            clientMessageString += message;
-                            cout << "Received: " << message << endl;
 
                             // Echo reply back to the client so receiveMessage() picks it up
                             if (message.find("status") != string::npos) {

@@ -18,8 +18,9 @@ protected:
     std::string serverPass;
 
     struct AuthenticateStruct {
-        std::future<bool> authenticated;
+        std::future<bool> checkFuture;
         std::atomic<bool> isChecking = { false };
+        std::atomic<bool> isAuthenticated = { false };
         sf::Clock checkClock;
         sf::Time checkInterval = sf::seconds(0.1f);
     };
@@ -35,10 +36,11 @@ protected:
     CheckConnectionStruct connection;
 
     struct ReceiveMessageStruct {
-        std::future<std::string> message;
+        std::future<std::string> checkFuture;
         sf::Clock checkClock;
         sf::Time checkInterval = sf::seconds(1.0f);
         std::atomic<bool> isChecking{ false };
+        std::atomic<bool> isReceived{ false };
         std::string receivedMessage;
     };
     ReceiveMessageStruct message;
@@ -53,7 +55,7 @@ public:
     bool sendMessage(std::string message);
     std::string receiveMessage();
     bool connect();
-    void update(Mode& currentMode);
-    bool getIsConnected() const { return connection.isConnected; }
+    bool triggerUIRebuild(Mode& currentMode);
+    void update();
 };
 

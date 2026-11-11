@@ -66,20 +66,38 @@ bool Networking_client::connect() {
     }
 }
 
-void Networking_client::update(Mode& currentMode) {
+bool Networking_client::triggerUIRebuild(Mode& currentMode) {
+    // Kick client
+    if (message.receivedMessage == "Passwords do not match!" && authenticate.isAuthenticated) {
+        authenticate.checkClock.restart();
+        authenticate.isChecking = false;
+        authenticate.isAuthenticated = false;
+        connection.checkClock.restart();
+        connection.isChecking = false;
+        connection.isConnected = false;
+        message.checkClock.restart();
+        message.receivedMessage == "";
+        message.isChecking = false;
+        message.isReceived = false;
+        currentMode = Mode::Neutral;
+        return true;
+    }
+    else
+        return false;
+}
+
+void Networking_client::update() {
     // One time authentication with the server
     if (!authenticate.isChecking && authenticate.checkClock.getElapsedTime() >= authenticate.checkInterval) {
         cout << "Authenticating..." << endl;
         authenticate.isChecking = true;
-        authenticate.authenticated = async(launch::async, &Networking_client::authenticateUser, this);
+        authenticate.checkFuture = async(launch::async, &Networking_client::authenticateUser, this);
     }
-    if (authenticate.isChecking && authenticate.authenticated.valid()) {
-        if (authenticate.authenticated.wait_for(chrono::seconds(0)) == future_status::ready) {
+    if (authenticate.isChecking && authenticate.checkFuture.valid()) {
+        if (authenticate.checkFuture.wait_for(chrono::seconds(0)) == future_status::ready) {
+            authenticate.isAuthenticated = authenticate.checkFuture.get();
+            authenticate.isChecking = false;
             authenticate.checkClock.restart();
-            cout << "Result: " << authenticate.authenticated.get() << endl;
-            if (!authenticate.authenticated.get()) {
-                currentMode = Mode::Neutral;
-            }
         }
     }
 
@@ -108,11 +126,11 @@ void Networking_client::update(Mode& currentMode) {
     if (!message.isChecking && message.checkClock.getElapsedTime() >= message.checkInterval) {
         cout << "Checking for messages..." << endl;
         message.isChecking = true;
-        message.message = async(launch::async, &Networking_client::receiveMessage, this);
+        message.checkFuture = async(launch::async, &Networking_client::receiveMessage, this);
     }
-    if (message.isChecking && message.message.valid()) {
-        if (message.message.wait_for(chrono::seconds(0)) == future_status::ready) {
-            message.receivedMessage = message.message.get();
+    if (message.isChecking && message.checkFuture.valid()) {
+        if (message.checkFuture.wait_for(chrono::seconds(0)) == future_status::ready) {
+            message.receivedMessage = message.checkFuture.get();
             message.isChecking = false;
             message.checkClock.restart();
             cout << "Received message: " << message.receivedMessage << endl;

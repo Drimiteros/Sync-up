@@ -27,8 +27,7 @@ void Main_loop::buildUI() {
                 { 650, 250 }, { 0.49, 0.49 }, { 0.115, 0.115 }, { 20, 92 }, { 0, 30 }, { 20, 20 }, { 255, 255, 255 }, { 255, 255, 255 }, 1, 20, 0, 1, 15,
                 [this]() {
                     currentMode = Mode::ClientSetup;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             ui_components.addButton(
@@ -36,8 +35,7 @@ void Main_loop::buildUI() {
                 { 390, 250 }, { 0.49, 0.49 }, { 0.115, 0.115 }, { 20, 92 }, { 0, 30 }, { 20, 20 }, { 255, 255, 255 }, { 255, 255, 255 }, 1, 20, 0, 1, 15,
                 [this]() {
                     currentMode = Mode::ServerSetup;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             break;
@@ -64,8 +62,7 @@ void Main_loop::buildUI() {
                 [this]() {
                     currentMode = Mode::Server;
                     networking_server.start();
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             break;
@@ -87,8 +84,7 @@ void Main_loop::buildUI() {
                 { float(width / 2) - 110, float(height / 2) + 200 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 110, 12 }, { 0, 0 }, { 70, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 1, 0,
                 [this]() {
                     networking_client.connect() ? currentMode = Mode::Client : currentMode = Mode::Neutral;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             ui_components.addTextField(
@@ -113,8 +109,7 @@ void Main_loop::buildUI() {
                 { 15, 15 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
                 [this]() {
                     currentState = State::Files;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             ui_components.addButton(
@@ -122,8 +117,7 @@ void Main_loop::buildUI() {
                 { 15, 65 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 10 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
                 [this]() {
                     currentState = State::Downloads;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             ui_components.addButton(
@@ -131,8 +125,7 @@ void Main_loop::buildUI() {
                 { 15, 115 }, { 0.49, 0.49 }, { 0.07, 0.07 }, { 50, 12 }, { 0, 0 }, { 10, 12 }, { 255, 255, 255, 155 }, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
                 [this]() {
                     currentState = State::Transfers;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             ui_components.addButton(
@@ -140,8 +133,7 @@ void Main_loop::buildUI() {
                 {15, 165}, {0.49, 0.49}, {0.1, 0.1}, {50, 12}, { 0, 0 }, {5, 4}, {255, 255, 255, 155}, { 0, 0, 0, 0 }, 0, 20, 0, 0, 0,
                 [this]() {
                     currentState = State::Settings;
-                    ui_components.clear();
-                    buildUI();
+                    reloadUI();
                 }
             );
             
@@ -157,6 +149,11 @@ void Main_loop::buildUI() {
             break;
         }
     }
+}
+
+void Main_loop::reloadUI() {
+    ui_components.clear();
+    buildUI();
 }
 
 void Main_loop::events() {
@@ -201,7 +198,8 @@ void Main_loop::update() {
             break;
         }
         case Mode::Client: {
-            networking_client.update(currentMode);
+            networking_client.update();
+            if (networking_client.triggerUIRebuild(currentMode)) reloadUI();
             ui_components.updateSidebar();
             ui_components.updateConnectionStatus(networking_client);
             break;

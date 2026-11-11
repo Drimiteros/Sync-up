@@ -430,3 +430,32 @@ void UI_components::drawTextFields(RenderWindow& window) {
         }
     }
 }
+
+// ---------------------------------------------------------------- Loading bar
+void UI_components::addLoadingBar(string id, Vector2f size, Vector2f position, std::wstring attachedEntityName) {
+    for (int i = 0; i < loadingBars.size(); i++) {
+        if (loadingBars[i].id == id) {
+            cout << "Loading bar with this id already exists." << endl;
+            return;
+        }
+    }
+
+    loadingBars.push_back(LoadingBar());
+    loadingBars.back().id = id;
+    loadingBars.back().bar.setSize(size);
+    loadingBars.back().bar.setPosition(position);
+    loadingBars.back().attachedEntityName = attachedEntityName;
+}
+void UI_components::updateLoadingBar(Disk_operations& disk_operations) {
+    for (int i = 0; i < loadingBars.size(); ++i) {
+        // Modify the size of each bar based on its attached drive's free size
+        for (int d = 0; d < disk_operations.drives.size(); ++d) {
+            if (loadingBars[i].id == disk_operations.full_names[d]) {
+
+            }
+        }
+    }
+}
+void UI_components::drawLoadingBar() {
+
+}

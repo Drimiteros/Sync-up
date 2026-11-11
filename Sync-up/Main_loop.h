@@ -27,12 +27,6 @@ private:
     std::string version = "v1.0";
     unsigned short serverPort = 25565;
 
-    void createWindow(unsigned int width, unsigned int height);
-    void buildUI();
-    void events();
-    void update();
-    void draw();
-
 public:
     // Initialize mode
     Mode currentMode = Mode::Neutral;
@@ -40,4 +34,10 @@ public:
 
     Main_loop();
     void loop();
+    void createWindow(unsigned int width, unsigned int height);
+    void buildUI();
+    void reloadUI();
+    void events();
+    void update();
+    void draw();
 };

@@ -6,6 +6,7 @@
 #include "Cursor_input.h"
 #include "Networking_client.h"
 #include "Networking_server.h"
+#include "Disk_operations.h"
 
 class Networking_client;
 
@@ -163,6 +164,17 @@ public:
         sf::Vector2f position, sf::Vector2f size, int characterSize
     );
 
+    struct LoadingBar {
+        std::string id;
+        std::wstring attachedEntityName;
+        RectangleShape bar;
+
+        LoadingBar() {
+
+        }
+    };
+    vector<LoadingBar> loadingBars;
+
     UI_components();
     void clear();
 
@@ -198,5 +210,9 @@ public:
     );
     void updadteTextField(const sf::Event& event, sf::RenderWindow& window);
     void drawTextFields(sf::RenderWindow& window);
+
+    void addLoadingBar(std::string id, sf::Vector2f size, sf::Vector2f position, std::wstring attachedEntityName);
+    void updateLoadingBar(Disk_operations& disk_operations);
+    void drawLoadingBar();
 };
 
