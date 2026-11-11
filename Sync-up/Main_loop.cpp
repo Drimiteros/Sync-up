@@ -93,11 +93,15 @@ void Main_loop::buildUI() {
             );
             ui_components.addTextField(
                 "ip", "Server IP", networking_client.ip, "127.0.0.1",
-                { float(width / 2) - 150, float(height / 2) - 100 }, { 300, 40 }, 20, 15, "0123456789."
+                { float(width / 2) - 150, float(height / 2) - 150 }, { 300, 40 }, 20, 15, "0123456789."
             );
             ui_components.addTextField(
-                "port", "Port", networking_client.port, 25565,
-                { float(width / 2) - 150, float(height / 2) }, { 300, 40 }, 20, 65535
+                "port", "Server Port", networking_client.port, 25565,
+                { float(width / 2) - 150, float(height / 2) - 50 }, { 300, 40 }, 20, 65535
+            );
+            ui_components.addTextField(
+                "pass", "Server Password", networking_client.serverPass, "",
+                { float(width / 2) - 150, float(height / 2) + 50 }, { 300, 40 }, 20, 25
             );
             break;
         }
@@ -197,7 +201,7 @@ void Main_loop::update() {
             break;
         }
         case Mode::Client: {
-            networking_client.update();
+            networking_client.update(currentMode);
             ui_components.updateSidebar();
             ui_components.updateConnectionStatus(networking_client);
             break;

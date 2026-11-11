@@ -43,9 +43,23 @@ void Networking_server::run() {
                     TcpSocket& client = **it;
                     if (selector.isReady(client)) {
                         Packet packet;
-                        if (client.receive(packet) == Socket::Done) {
+                        Socket::Status status = client.receive(packet);
+                        if (status == Socket::Done) {
                             string message;
                             packet >> message;
+
+                            // Kick client with invalid credentials
+                            if (message.find("password") != string::npos) {
+                                string getPass = message.substr(9, message.length() - 9);
+                                cout << "Extracted password: " << getPass << endl;
+                                if (getPass != password) {
+                                    cout << "Client not authenticated." << endl;
+                                    selector.remove(client);
+                                    it = clients.erase(it);
+                                    clientCount--;
+                                    continue;
+                                }
+                            }
 
                             // Restore message handling and thread safety
                             lock_guard<mutex> lock(serverMutex);

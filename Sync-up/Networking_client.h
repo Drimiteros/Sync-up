@@ -6,6 +6,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
 #include "UI_components.h"
+#include "Enums.h"
 
 class Networking_client {
 private:
@@ -14,6 +15,15 @@ protected:
     int port = 25565;
     std::string ip = "127.0.0.1";
     sf::TcpSocket socket;
+    std::string serverPass;
+
+    struct AuthenticateStruct {
+        std::future<bool> authenticated;
+        std::atomic<bool> isChecking = { false };
+        sf::Clock checkClock;
+        sf::Time checkInterval = sf::seconds(0.1f);
+    };
+    AuthenticateStruct authenticate;
 
     struct CheckConnectionStruct {
         std::future<bool> checkFuture;
@@ -39,10 +49,11 @@ protected:
 public:
     Networking_client();
     bool checkConnectionTask();
+    bool authenticateUser();
     bool sendMessage(std::string message);
     std::string receiveMessage();
     bool connect();
-    void update();
+    void update(Mode& currentMode);
     bool getIsConnected() const { return connection.isConnected; }
 };
 

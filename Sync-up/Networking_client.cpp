@@ -17,6 +17,17 @@ bool Networking_client::checkConnectionTask() {
         return false;
 }
 
+bool Networking_client::authenticateUser() {
+    Packet authenticationPacket;
+    authenticationPacket << "password:" + serverPass;
+    Socket::Status status = socket.send(authenticationPacket);
+
+    if (status == Socket::Done)
+        return true;
+    else
+        return false;
+}
+
 bool Networking_client::sendMessage(string message) {
     Packet packet;
     packet << message;
@@ -55,7 +66,23 @@ bool Networking_client::connect() {
     }
 }
 
-void Networking_client::update() {
+void Networking_client::update(Mode& currentMode) {
+    // One time authentication with the server
+    if (!authenticate.isChecking && authenticate.checkClock.getElapsedTime() >= authenticate.checkInterval) {
+        cout << "Authenticating..." << endl;
+        authenticate.isChecking = true;
+        authenticate.authenticated = async(launch::async, &Networking_client::authenticateUser, this);
+    }
+    if (authenticate.isChecking && authenticate.authenticated.valid()) {
+        if (authenticate.authenticated.wait_for(chrono::seconds(0)) == future_status::ready) {
+            authenticate.checkClock.restart();
+            cout << "Result: " << authenticate.authenticated.get() << endl;
+            if (!authenticate.authenticated.get()) {
+                currentMode = Mode::Neutral;
+            }
+        }
+    }
+
     // Check connection status every 5 sec
     if (!connection.isChecking && connection.checkClock.getElapsedTime() >= connection.checkInterval) {
         cout << "Checking connection..." << endl;
